@@ -7,7 +7,7 @@ Piscine-DevNest
 
 Project Type:
 
-Social Networking & Collaboration App for Learn2Earn Piscine Candidates
+Social Networking & Collaboration App for Learn2Earn Piscine Candidates and Graduates
 
 Purpose / Objective:
 
