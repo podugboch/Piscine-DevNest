@@ -1,0 +1,53 @@
+package app
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+
+	"piscine-devnest/internal/handlers"
+	"piscine-devnest/internal/model"
+	"piscine-devnest/internal/ws"
+)
+
+func Run() error {
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		dsn = "postgres://postgres:mypassword@localhost:5432/piscine?sslmode=disable"
+	}
+
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		jwtSecret = "dev-secret"
+	}
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return fmt.Errorf("connect db: %w", err)
+	}
+
+	if err := db.AutoMigrate(&model.User{}, &model.Resource{}, &model.Connection{}); err != nil {
+		return fmt.Errorf("migrate: %w", err)
+	}
+
+	r := gin.Default()
+
+	// WebSocket Hub
+	hub := ws.NewHub()
+	go hub.Run()
+
+	// handler
+	h := handlers.NewHandler(db, hub)
+
+	h.RegisterRoutes(r)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	return r.Run(":" + port)
+}
