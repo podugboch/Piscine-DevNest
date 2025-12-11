@@ -1,12 +1,12 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL; // Make sure your .env has VITE_API_URL=http://localhost:8080
 
-// Example: Ping backend
+// Ping backend
 export const pingBackend = async () => {
   const res = await fetch(`${API_URL}/api/ping`);
   return res.json();
 };
 
-// Example: Login
+// Login function
 export const login = async (email, password) => {
   const res = await fetch(`${API_URL}/api/login`, {
     method: "POST",
@@ -16,10 +16,11 @@ export const login = async (email, password) => {
   return res.json();
 };
 
-// Example: Get users (requires JWT token)
+// Get all users (requires JWT token)
 export const getUsers = async (token) => {
   const res = await fetch(`${API_URL}/api/users`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return res.json();
 };
+

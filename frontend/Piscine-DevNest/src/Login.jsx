@@ -4,7 +4,6 @@ import axios from "axios";
 
 export default function Login() {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,25 +13,19 @@ export default function Login() {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:8080/login", {
-        email,
-        password,
-      });
-
-      // Save JWT token
+      const res = await axios.post("http://localhost:8080/api/login", { email, password });
       localStorage.setItem("token", res.data.token);
 
-      // Redirect to Dashboard
+      localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError("Invalid email or password");
+      setError(err.response?.data?.error || "Login failed");
     }
   };
 
   return (
     <div className="login-page">
       <h2>Login</h2>
-
       <form onSubmit={handleSubmit}>
         <label>Email:</label>
         <input
@@ -57,4 +50,3 @@ export default function Login() {
     </div>
   );
 }
-
